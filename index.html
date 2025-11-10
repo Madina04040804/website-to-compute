@@ -1,56 +1,293 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ru">
 <head>
-  <!-- 
-      This is an HTML comment
-      You can write text in a comment and the content won't be visible in the page
-    -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кто хочет стать миллионером</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: 
+        linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+        url('https://progorod43.ru/userfiles/picfullsize/img-74072-15983723311246.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+}
 
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" href="https://glitch.com/favicon.ico" />
+.game-container {
+    background: rgba(0,0,0,0.85);
+    padding: 30px 40px;
+    border-radius: 15px;
+    width: 700px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.7);
+    text-align: center;
+}
 
-  <!--
-      This is the page head - it contains info the browser uses
-      Like the title, which appears on the browser tab but not inside the page
-      Further down you'll see the content that displays in the page
-    -->
-  <title>Hello World!</title>
+h1 { margin-bottom: 10px; }
+#timer { font-size: 18px; margin-bottom: 10px; }
+#question { font-size: 18px; margin-bottom: 20px; }
 
-  <!-- The website stylesheet -->
-  <link rel="stylesheet" href="/style.css" />
+#answers {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+}
 
-  <!-- The website JavaScript file -->
-  <script src="/script.js" defer></script>
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 48%;
+}
+
+.answer-btn {
+    padding: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    background-color: #3b3a5e;
+    color: #fff;
+    transition: 0.3s;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+.answer-btn span.option { font-weight: bold; width: 25px; display: inline-block; }
+.answer-btn:hover { background-color: #5c5a8c; }
+
+#scoreboard {
+    text-align: center;
+    font-size: 18px;
+    margin-top: 15px;
+}
+
+#restart-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    display: none;
+    border: none;
+    border-radius: 8px;
+    background-color: #ff9800;
+    color: #fff;
+    transition: 0.3s;
+}
+
+#restart-btn:hover { background-color: #e68900; }
+
+#winModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    text-align: center;
+    flex-direction: column;
+}
+
+#winModal h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+#winModal button {
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    background-color: #4caf50;
+    cursor: pointer;
+    color: #fff;
+    transition: 0.3s;
+}
+
+#winModal button:hover {
+    background-color: #45a049;
+}
+</style>
 </head>
-
 <body>
-  <!--
-      The body includes the content you see in the page
-      Each element is defined using tags, like this <div></div>
-      The attributes like class="wrapper" let us style elements in the CSS
-    -->
-  <div class="wrapper">
-    <div class="content" role="main">
-      <h1 class="title">Oh hi website!</h1>
-      <img src="/cool-website.svg" class="illustration" alt="cool website" />
-      <div class="instructions">
-        <p>
-          Fork <a href="https://github.com/glitchdotcom/website-to-compute">this project</a> and open it in a GitHub Codespace.
-        </p>
-        <p> Follow the steps in the README to deploy your new website to Fastly in a few steps!
-        </p>
 
-      </div>
-
-      <footer class="footer">
-        <div>
-          <a class="remix" href="https://github.com/glitchdotcom/website-to-compute">🚧 Get your own site</a>
+<div class="game-container">
+    <h1>Кто хочет стать миллионером</h1>
+    <div id="timer">Время: 08:00</div>
+    <div id="question-container">
+        <p id="question"></p>
+        <div id="answers">
+            <div class="column" id="left-column">
+                <button class="answer-btn" id="a"><span class="option">A.</span> <span class="text"></span></button>
+                <button class="answer-btn" id="b"><span class="option">B.</span> <span class="text"></span></button>
+            </div>
+            <div class="column" id="right-column">
+                <button class="answer-btn" id="c"><span class="option">C.</span> <span class="text"></span></button>
+                <button class="answer-btn" id="d"><span class="option">D.</span> <span class="text"></span></button>
+            </div>
         </div>
-      </footer>
     </div>
-  </div>
-</body>
+    <div id="scoreboard">Очки: 0</div>
+    <button id="restart-btn">Начать заново</button>
+</div>
 
+<div id="winModal">
+    <h2>Поздравляем!</h2>
+    <p>Вы правильно ответили на все вопросы!</p>
+    <button id="closeWinModal">Закрыть</button>
+</div>
+
+<script>
+const allQuestions = [
+    { question: "Дать определение сети.", answers: {a:"Совокупность взаимосвязанных устройств", b:"Компьютер без подключения", c:"Только интернет", d:"Программа обмена данными"}, correct: "a" },
+    { question: "Чем отличается коммуникационная сеть от информационной сети?", answers: {a:"Коммуникационная передает данные, информационная обрабатывает", b:"Нет различий", c:"Коммуникационная только интернет", d:"Информационная только Wi-Fi"}, correct: "a" },
+    { question: "Как разделяются сети по территориальному признаку?", answers: {a:"LAN, MAN, WAN", b:"TCP, UDP", c:"HTTP, HTTPS", d:"Ethernet, Token Ring"}, correct: "a" },
+    { question: "Что такое информационная система?", answers: {a:"Комплекс оборудования, ПО и людей для обработки данных", b:"Только компьютер", c:"Сеть Wi-Fi", d:"Программа обмена файлами"}, correct: "a" },
+    { question: "Что такое каналы связи?", answers: {a:"Средства передачи данных", b:"Системные блоки", c:"Программы", d:"Сервера"}, correct: "a" },
+    { question: "Дать определение физического канала связи.", answers: {a:"Физическое соединение устройств", b:"Программа передачи", c:"IP-адрес", d:"Сервер"}, correct: "a" },
+    { question: "Дать определение логического канала связи.", answers: {a:"Виртуальное соединение для обмена данными", b:"Физическое соединение", c:"Маршрутизатор", d:"Сервер"}, correct: "a" },
+    { question: "Как называется совокупность правил обмена информацией между устройствами?", answers: {a:"Протокол", b:"Сетевой кабель", c:"Сервер", d:"IP-адрес"}, correct: "a" },
+    { question: "Что такое рабочая станция в сети?", answers: {a:"Компьютер, использующий ресурсы сети", b:"Обычный ПК без сети", c:"Сервер", d:"Маршрутизатор"}, correct: "a" },
+    { question: "Какие элементы входят в состав сети?", answers: {a:"Устройства, каналы, протоколы, пользователи", b:"Только компьютеры", c:"Только серверы", d:"Только маршрутизаторы"}, correct: "a" },
+    { question: "Что такое архитектура сети?", answers: {a:"Структура взаимодействия элементов сети", b:"Программа обмена файлами", c:"Физический кабель", d:"Сервер"}, correct: "a" },
+    { question: "Как называется описание физических соединений в сети?", answers: {a:"Топология", b:"Протокол", c:"IP-адрес", d:"Маршрутизатор"}, correct: "a" },
+    { question: "Назовите способ определения, какая из рабочих станций сможет использовать канал связи следующей.", answers: {a:"Метод доступа", b:"IP-адрес", c:"Протокол", d:"Сервер"}, correct: "a" },
+    { question: "Перечислите преимущества использования сетей.", answers: {a:"Обмен данными, совместное использование ресурсов, безопасность", b:"Только скорость", c:"Только хранение", d:"Никаких преимуществ"}, correct: "a" },
+    { question: "Чем отличается одноранговая архитектура от клиент-серверной?", answers: {a:"Все равноправны vs выделенный сервер", b:"Нет различий", c:"Используют разные кабели", d:"Только сервер"}, correct: "a" },
+    { question: "Какие сервисы предоставляет клиент-серверная архитектура?", answers: {a:"Файловый, печати, базы данных, электронная почта", b:"Только файлы", c:"Только принтер", d:"Только интернет"}, correct: "a" },
+    { question: "Что такое сервер?", answers: {a:"Компьютер, предоставляющий ресурсы другим", b:"Обычный ПК", c:"Маршрутизатор", d:"Кабель"}, correct: "a" },
+    { question: "Что такое OSI?", answers: {a:"Модель взаимодействия открытых систем", b:"Программа почты", c:"Кабельная сеть", d:"Маршрутизатор"}, correct: "a" },
+    { question: "На какие уровни разбита модель OSI?", answers: {a:"Физический, канальный, сетевой, транспортный, сеансовый, представления, прикладной", b:"Только 3 уровня", c:"Физический и сетевой", d:"Канальный и транспортный"}, correct: "a" },
+    { question: "Какие функции выполняются на физическом уровне?", answers: {a:"Передача битов по каналу связи", b:"Шифрование данных", c:"Маршрутизация", d:"Обработка приложений"}, correct: "a" },
+    { question: "Какое оборудование используется на физическом уровне?", answers: {a:"Кабели, хабы, повторители", b:"Серверы", c:"Маршрутизаторы", d:"Программы"}, correct: "a" },
+    { question: "Какие функции выполняются на канальном уровне?", answers: {a:"Адресация в сети, обнаружение ошибок", b:"Обработка приложений", c:"Шифрование данных", d:"Маршрутизация"}, correct: "a" },
+    { question: "Какие протоколы используются на канальном уровне?", answers: {a:"Ethernet, PPP, Token Ring", b:"HTTP, FTP", c:"TCP, UDP", d:"DNS"}, correct: "a" },
+    { question: "Какие функции выполняются на сетевом уровне?", answers: {a:"Маршрутизация, логическая адресация", b:"Передача битов", c:"Обработка данных приложений", d:"Физическая адресация"}, correct: "a" },
+    { question: "Какое оборудование используется на сетевом уровне?", answers: {a:"Маршрутизаторы, коммутаторы уровня 3", b:"Хабы", c:"Серверы", d:"Принтеры"}, correct: "a" },
+    { question: "Какие функции выполняются на транспортном уровне?", answers: {a:"Управление потоками, проверка ошибок, сегментация данных", b:"Передача битов", c:"Маршрутизация", d:"Обработка приложений"}, correct: "a" },
+    { question: "Какие протоколы используются на транспортном уровне?", answers: {a:"TCP, UDP", b:"HTTP, FTP", c:"Ethernet, Token Ring", d:"DNS"}, correct: "a" },
+    { question: "Что такое сеансовый уровень?", answers: {a:"Управляет диалогами между приложениями", b:"Передача битов", c:"Маршрутизация", d:"Физические соединения"}, correct: "a" },
+    { question: "Задачи уровня представления данных.", answers: {a:"Шифрование, сжатие, преобразование формата", b:"Маршрутизация", c:"Передача битов", d:"Обработка приложений"}, correct: "a" },
+    { question: "Перечислить функции прикладного уровня.", answers: {a:"Обеспечение интерфейсов приложений, доступ к сети", b:"Передача битов", c:"Маршрутизация", d:"Физическая адресация"}, correct: "a" },
+    { question: "Назовите наиболее популярные сетевые протоколы.", answers: {a:"IP, ARP", b:"HTTP, FTP", c:"TCP, UDP", d:"DNS"}, correct: "a" },
+    { question: "Назовите наиболее популярные транспортные протоколы.", answers: {a:"TCP, UDP", b:"IP, ARP", c:"HTTP, FTP", d:"Ethernet, Token Ring"}, correct: "a" },
+    { question: "Назовите наиболее популярные прикладные протоколы.", answers: {a:"HTTP, FTP, SMTP", b:"TCP, UDP", c:"IP, ARP", d:"Ethernet"}, correct: "a" },
+    { question: "Что такое топология сети?", answers: {a:"Описание структуры соединений устройств", b:"Протокол передачи данных", c:"Сервер", d:"Маршрутизатор"}, correct: "a" },
+    { question: "Перечислить методы доступа к каналу связи.", answers: {a:"CSMA/CD, TDMA, Token Passing, FDMA", b:"TCP, UDP", c:"HTTP, FTP", d:"DNS"}, correct: "a" }
+];
+
+let questions = [];
+let currentQuestion = 0;
+let currentPoints = 0;
+let timeLeft = 480; 
+let timerInterval;
+
+function shuffleArray(array) {
+    return array.sort(() => Math.random() - 0.5);
+}
+
+function generateQuestions() {
+    questions = [];
+    const copy = [...allQuestions];
+    while(questions.length < 8 && copy.length > 0) {
+        questions.push(copy.splice(Math.floor(Math.random()*copy.length),1)[0]);
+    }
+}
+
+function loadQuestion() {
+    const q = questions[currentQuestion];
+    document.getElementById('question').innerText = q.question;
+
+
+    let options = Object.entries(q.answers).map(([key,value]) => ({key,value}));
+    options = shuffleArray(options);
+
+    ['a','b','c','d'].forEach((id,i) => {
+        const btn = document.getElementById(id);
+        const opt = options[i];
+        document.querySelector('#'+id+' .text').innerText = opt.value || '';
+        btn.dataset.correct = (opt.key === q.correct);
+        btn.disabled = false;
+        btn.style.backgroundColor = '#3b3a5e';
+    });
+    document.getElementById('restart-btn').style.display = 'none';
+}
+
+function endGame(selectedBtn) {
+    ['a','b','c','d'].forEach(id => {
+        const btn = document.getElementById(id);
+        if(btn.dataset.correct == 'true') btn.style.backgroundColor = '#4caf50';
+        btn.disabled = true;
+    });
+    if(selectedBtn && selectedBtn.dataset.correct == 'false') selectedBtn.style.backgroundColor = '#f44336';
+    document.getElementById('restart-btn').style.display = 'block';
+    clearInterval(timerInterval);
+}
+
+function showWinScreen() {
+    document.getElementById('winModal').style.display = 'flex';
+    clearInterval(timerInterval);
+}
+
+function checkAnswer(e) {
+    if(e.currentTarget.dataset.correct === 'true') {
+        currentPoints++;
+        document.getElementById('scoreboard').innerText = `Очки: ${currentPoints}`;
+        e.currentTarget.style.backgroundColor = '#4caf50';
+        currentQuestion++;
+        if(currentQuestion >= questions.length) {
+            setTimeout(showWinScreen, 300);
+        } else {
+            setTimeout(loadQuestion, 300);
+        }
+    } else {
+        endGame(e.currentTarget);
+    }
+}
+
+function startTimer() {
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60).toString().padStart(2,'0');
+        const seconds = (timeLeft % 60).toString().padStart(2,'0');
+        document.getElementById('timer').innerText = `Время: ${minutes}:${seconds}`;
+        if(timeLeft <= 0) {
+            clearInterval(timerInterval);
+            alert(`Время вышло! Вы набрали ${currentPoints} очков.`);
+            endGame();
+        }
+    }, 1000);
+}
+
+function restartGame() {
+    generateQuestions();
+    currentQuestion = 0;
+    currentPoints = 0;
+    timeLeft = 480; 
+    document.getElementById('scoreboard').innerText = "Очки: 0";
+    startTimer();
+    loadQuestion();
+    document.getElementById('winModal').style.display = 'none';
+}
+
+document.querySelectorAll('.answer-btn').forEach(btn => btn.addEventListener('click', checkAnswer));
+document.getElementById('restart-btn').addEventListener('click', restartGame);
+document.getElementById('closeWinModal').addEventListener('click', restartGame);
+
+restartGame();
+</script>
+
+</body>
 </html>
